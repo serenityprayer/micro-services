@@ -1,0 +1,82 @@
+rabbitmq:
+  image: rabbitmq:3-management
+  restart: always
+  ports:
+   - "5672:5672"
+   - "15672:15672"
+discovery:
+  image: micro-services/eureka-server
+  ports:
+   - "8000:8000"
+zipkin:
+  image: micro-services/zipkin-server
+  ports:
+   - "9411:9411"
+admin-server:
+  image: micro-services/boot-admin-server
+  ports:
+   - "9412:9412"
+  links:
+   - discovery
+client:
+  image: micro-services/eureka-client
+  ports:
+     - "9000:9000"
+  links:
+   - discovery
+   - zipkin
+consumer-feign:
+  image: micro-services/eureka-consumer-feign
+  ports:
+     - "9012:9012"
+  links:
+   - discovery
+   - client
+   - zipkin
+consumer-ribbon:
+  image: micro-services/eureka-consumer-ribbon
+  ports:
+     - "9011:9011"
+  links:
+   - discovery
+   - client
+consumer:
+  image: micro-services/eureka-consumer
+  ports:
+     - "9010:9010"
+  links:
+   - discovery
+   - client
+api-gateway:
+  image: micro-services/api-gateway
+  ports:
+   - "8010:8010"
+  links:
+   - discovery
+   - client
+   - consumer-feign
+   - zipkin
+hystrix-dashboard:
+  image: micro-services/hystrix-dashboard-turbine
+  ports:
+   - "7979:7979"
+  links:
+   - discovery
+   - consumer-ribbon
+   - consumer-feign
+config-server:
+  image: micro-services/config-server
+  ports:
+   - "8040:8040"
+  links:
+   - rabbitmq
+   - discovery
+config-client:
+  image: micro-services/config-client
+  ports:
+   - "9030:9030"
+  links:
+   - rabbitmq
+   - discovery
+   - config-server
+

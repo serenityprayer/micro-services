@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    config:
+      profile: prd  #对应不同环境，默认default
+      label: master #对应Git上不同的分支，默认master
+      name: config  #默认应用的名称${spring.application.name:application}
+      #uri: http://localhost:8040/
+      discovery:
+        enabled: true
+        service-id: config-server
+  rabbitmq:
+      host: rabbitmq
+      port: 5672
+      username: guest
+      password: guest
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8000/eureka/   # 注册中心eureka地址，启动时加载故需放在bootstrap中
+  instance:
+    prefer-ip-address: true
+

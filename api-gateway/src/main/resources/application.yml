@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: api-gateway
+  zipkin.base-url: http://zipkin:9411 # 配置zipKin Server的地址
+  sleuth.sampler.percentage: 1
+
+server:
+  port: 8010
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8000/eureka/
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  routes:
+    eureka-client: /client/**
+    eureka-consumer:
+      path: /consumer/**
+      serviceId: eureka-consumer-feign
+  retryable: true  #是否开启重试功能
+
